@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolo Destruidor de Impulsos - Playbook Premium</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        /* Barra de Progresso */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(255,255,255,0.3);
+            z-index: 1000;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Capa */
+        .cover {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://appestoicismo.github.io/metodorepro/personal2.png');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+        }
+
+        .cover-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cover h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            animation: fadeInDown 1s ease;
+        }
+
+        .cover .subtitle {
+            font-size: 1.5em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #1e3c72;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-top: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        /* Seções */
+        .section {
+            min-height: 100vh;
+            padding: 80px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .section p {
+            color: #333;
+        }
+
+        .section:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-number {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            line-height: 60px;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .section h2 {
+            font-size: 2.5em;
+            color: #1e3c72;
+            margin-bottom: 15px;
+        }
+
+        .section h3 {
+            font-size: 1.3em;
+            color: #333;
+            font-weight: normal;
+            margin-bottom: 30px;
+        }
+
+        .section-image {
+            width: 100%;
+            max-width: 500px;
+            height: 300px;
+            margin: 30px auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            object-fit: cover;
+        }
+
+        /* Cards de Ação */
+        .action-card {
+            background: linear-gradient(135deg, #4c5fd5 0%, #5a3a7f 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .action-card h4 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ffffff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .action-card h4::before {
+            content: '⚡';
+            font-size: 1.2em;
+        }
+
+        .action-card p {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            line-height: 1.8;
+            color: #ffffff;
+        }
+        
+        .action-card ul li {
+            color: #ffffff;
+        }
+        
+        .action-card strong {
+            color: #ffd700;
+        }
+
+        /* Campos Interativos */
+        .interactive-field {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .interactive-field label {
+            display: block;
+            color: #1e3c72;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .interactive-field textarea,
+        .interactive-field input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .interactive-field textarea:focus,
+        .interactive-field input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Botões */
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #1e3c72;
+        }
+
+        .btn-small {
+            padding: 10px 25px;
+            font-size: 0.95em;
+        }
+
+        /* Cronômetro */
+        .timer-container {
+            text-align: center;
+            margin: 30px 0;
+            padding: 40px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .timer-display {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .timer-label {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* Contador de Repetições */
+        .counter-container {
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .counter-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 15px 0;
+        }
+
+        .counter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        /* Lista de Passos */
+        .steps-list {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .steps-list ol {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+
+        .steps-list li {
+            counter-increment: step-counter;
+            padding: 20px;
+            margin: 15px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #4c5fd5;
+            position: relative;
+            padding-left: 70px;
+            color: #1a1a1a;
+            font-weight: 500;
+            line-height: 1.8;
+        }
+
+        .steps-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #4c5fd5, #5a3a7f);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .steps-list li strong {
+            color: #000;
+            font-weight: 700;
+        }
+
+        /* Checkbox de Progresso */
+        .progress-checklist {
+            margin: 30px 0;
+        }
+
+        .progress-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .progress-item.completed {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+        }
+
+        .progress-item input[type="checkbox"] {
+            width: 25px;
+            height: 25px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        /* Seção Bônus */
+        .bonus-section {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 60px 40px;
+            border-radius: 15px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .bonus-section h3 {
+            color: #1e3c72;
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+        }
+        
+        .bonus-section > p {
+            color: #1e3c72;
+            font-weight: 500;
+        }
+
+        .bonus-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .bonus-card h4 {
+            color: #4c5fd5;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .bonus-card p {
+            color: #333;
+            line-height: 1.8;
+        }
+
+        /* Registro de Vitórias */
+        .victories-log {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .victory-entry {
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+        }
+
+        .victory-date {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        /* Animações */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* Importante/Destaque */
+        .highlight {
+            background: #fff9e6;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #ff9800;
+            margin: 20px 0;
+        }
+
+        .highlight strong {
+            color: #e65100;
+            font-weight: 700;
+        }
+        
+        .highlight p {
+            color: #333;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1e3c72;
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .footer p {
+            margin: 10px 0;
+            opacity: 0.9;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .cover h1 {
+                font-size: 2.2em;
+            }
+
+            .cover .subtitle {
+                font-size: 1.2em;
+            }
+
+            .section {
+                padding: 60px 20px;
+            }
+
+            .section h2 {
+                font-size: 1.8em;
+            }
+
+            .timer-display {
+                font-size: 3em;
+            }
+
+            .counter-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Toast de Salvamento */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #4caf50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de Progresso -->
+    <div class="progress-bar">
+        <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+
+    <!-- Toast de Salvamento -->
+    <div class="toast" id="toast">✓ Progresso salvo automaticamente!</div>
+
+    <div class="container">
+        <!-- CAPA -->
+        <section class="cover">
+            <div class="cover-content">
+                <h1>O Protocolo<br>"Destruidor de Impulsos"</h1>
+                <p class="subtitle">Um Guia de Emergência de 60 Segundos para<br>Retomar o Controle e Quebrar Gatilhos Mentais</p>
+                <div class="badge">⚡ Ferramenta de Transformação Imediata</div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 2: A GRANDE PROMESSA -->
+        <section class="section" id="section-intro">
+            <div class="section-header">
+                <h2>Você está a 60 segundos de desativar seu pior impulso.</h2>
+            </div>
+
+            <div style="max-width: 700px; margin: 0 auto;">
+                <p style="font-size: 1.2em; margin-bottom: 20px; text-align: center;">
+                    <strong>Este não é um livro. É uma ferramenta de emergência.</strong>
+                </p>
+
+                <p style="font-size: 1.1em; line-height: 1.8; margin-bottom: 20px;">
+                    Você não precisa de "força de vontade" (a força de vontade sempre falha quando você mais precisa dela). 
+                    Você só precisa executar 3 passos simples.
+                </p>
+
+                <p style="font-size: 1.1em; line-height: 1.8; margin-bottom: 20px;">
+                    Vamos reprogramar sua mente.
+                </p>
+
+                <div class="highlight">
+                    <p style="font-size: 1.1em;">
+                        <strong>O objetivo é que, ao ver o "gatilho"</strong> (o doce, o celular, a procrastinação), 
+                        seu cérebro sinta <strong>poder</strong>, e não desejo.
+                    </p>
+                </div>
+
+                <p style="font-size: 1.3em; text-align: center; color: #667eea; font-weight: bold; margin-top: 40px;">
+                    Vamos começar.
+                </p>
+
+                <!-- Checklist de Progresso -->
+                <div class="progress-checklist" style="margin-top: 50px;">
+                    <h3 style="text-align: center; color: #1e3c72; margin-bottom: 25px;">Seu Progresso no Protocolo</h3>
+                    <div class="progress-item">
+                        <input type="checkbox" id="check-passo1">
+                        <label for="check-passo1">Passo 1: Identifiquei meu Gatilho (Imagem da Derrota)</label>
+                    </div>
+                    <div class="progress-item">
+                        <input type="checkbox" id="check-passo2">
+                        <label for="check-passo2">Passo 2: Defini minha Visão (Imagem da Vitória)</label>
+                    </div>
+                    <div class="progress-item">
+                        <input type="checkbox" id="check-passo3">
+                        <label for="check-passo3">Passo 3: Executei o Protocolo de 60 Segundos (10x)</label>
+                    </div>
+                    <div class="progress-item">
+                        <input type="checkbox" id="check-passo4">
+                        <label for="check-passo4">Passo 4: Testei e Confirmei os Resultados</label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 3: PASSO 1 -->
+        <section class="section" id="section-passo1">
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <h2>Identifique o Gatilho</h2>
+                <h3>(A Imagem da Derrota)</h3>
+            </div>
+
+            <img src="https://appestoicismo.github.io/metodorepro/trilha%201.jpeg" alt="Passo 1" class="section-image">
+
+            <div style="max-width: 700px; margin: 0 auto;">
+                <p style="font-size: 1.1em; line-height: 1.8; margin-bottom: 30px;">
+                    Você precisa ser específico. O impulso não começa com o ato de ceder, ele começa com uma 
+                    <strong>imagem em sua mente</strong>.
+                </p>
+
+                <p style="font-size: 1.1em; line-height: 1.8; margin-bottom: 30px;">
+                    Queremos a imagem exata que você vê um segundo antes de ceder.
+                </p>
+
+                <div class="action-card">
+                    <h4>AÇÃO (Faça Agora)</h4>
+                    <p>Feche os olhos. Qual é a imagem exata que dispara o seu desejo?</p>
+                    <ul style="margin-left: 20px; margin-top: 15px;">
+                        <li>É a porta da geladeira?</li>
+                        <li>É a embalagem vermelha do chocolate?</li>
+                        <li>É o ícone do iFood no seu celular?</li>
+                        <li>É a tela de "próximo episódio" da Netflix?</li>
+                    </ul>
+                    <p style="margin-top: 20px;"><strong>Pegue essa imagem mental. Esta é a sua "Imagem da Derrota".</strong></p>
+                </div>
+
+                <div class="interactive-field">
+                    <label>📝 Descreva sua "Imagem da Derrota" com o máximo de detalhes possível:</label>
+                    <textarea id="gatilho" placeholder="Exemplo: Vejo a porta da geladeira branca, com o ímã do Mickey Mouse, à noite quando a casa está silenciosa...">
+                    </textarea>
+                    <button class="btn btn-small" onclick="saveData()">💾 Salvar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 4: PASSO 2 -->
+        <section class="section" id="section-passo2">
+            <div class="section-header">
+                <div class="section-number">2</div>
+                <h2>Defina sua Visão</h2>
+                <h3>(A Imagem da Vitória)</h3>
+            </div>
+
+            <img src="https://appestoicismo.github.io/metodorepro/trilha%205.jpeg" alt="Passo 2" class="section-image">
+
+            <div style="max-width: 700px; margin: 0 auto;">
+                <p style="font-size: 1.1em; line-height: 1.8; margin-bottom: 30px;">
+                    Seu cérebro precisa de um novo alvo. Uma <strong>imagem de poder</strong> para substituir a imagem da derrota.
+                </p>
+
+                <p style="font-size: 1.1em; line-height: 1.8; margin-bottom: 30px;">
+                    Crie uma imagem de você depois de ter vencido esse impulso. Como você estaria?
+                </p>
+
+                <div class="action-card">
+                    <h4>AÇÃO (Faça Agora)</h4>
+                    <p>Veja a si mesmo(a) orgulhoso(a), confiante, com o corpo que deseja, sentindo-se em total controle.</p>
+                    <p style="margin-top: 15px;">
+                        Torne essa imagem <strong>VIVA, BRILHANTE e PODEROSA</strong>. Sinta o orgulho de ter vencido.
+                    </p>
+                    <p style="margin-top: 20px;"><strong>Esta é a sua "Imagem de Poder".</strong></p>
+                </div>
+
+                <div class="interactive-field">
+                    <label>🏆 Descreva sua "Imagem de Poder" - como você se vê vitorioso(a):</label>
+                    <textarea id="visao" placeholder="Exemplo: Me vejo na frente do espelho, sorrindo com confiança, vestindo aquela roupa que sempre quis usar, sentindo meu corpo forte e saudável, com um brilho nos olhos de quem está no controle total...">
+                    </textarea>
+                    <button class="btn btn-small" onclick="saveData()">💾 Salvar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 5: PASSO 3 -->
+        <section class="section" id="section-passo3">
+            <div class="section-header">
+                <div class="section-number">3</div>
+                <h2>A Execução Rápida</h2>
+                <h3>(O Protocolo de 60 Segundos)</h3>
+            </div>
+
+            <img src="https://appestoicismo.github.io/metodorepro/trilha%203.jpeg" alt="Passo 3" class="section-image">
+
+            <div style="max-width: 700px; margin: 0 auto;">
+                <p style="font-size: 1.1em; line-height: 1.8; margin-bottom: 30px;">
+                    Agora, vamos conectar o Gatilho (Derrota) ao Poder (Vitória). Este é o <strong>"SWISH"</strong>.
+                </p>
+
+                <div class="highlight">
+                    <p style="font-size: 1.15em;">
+                        <strong>O segredo aqui é a VELOCIDADE.</strong> Faça o mais rápido que puder.
+                    </p>
+                </div>
+
+                <!-- Cronômetro -->
+                <div class="timer-container">
+                    <div class="timer-label">⏱️ Cronômetro de 60 Segundos</div>
+                    <div class="timer-display" id="timerDisplay">60</div>
+                    <button class="btn" onclick="startTimer()">▶️ Iniciar Timer</button>
+                    <button class="btn btn-secondary btn-small" onclick="resetTimer()">🔄 Reiniciar</button>
+                </div>
+
+                <div class="action-card">
+                    <h4>AÇÃO (Faça 10x)</h4>
+                    
+                    <div class="steps-list">
+                        <ol>
+                            <li>Imagine a "Imagem da Derrota" (Gatilho) grande e nítida à sua frente.</li>
+                            <li>Imagine a "Imagem de Poder" (Vitória) como um ponto pequeno e escuro no canto inferior direito dessa imagem.</li>
+                            <li>Agora, em <strong>MENOS DE UM SEGUNDO</strong>, faça a "Imagem de Poder" (o ponto) <strong>EXPLODIR</strong> em tamanho e brilho, quebrando e substituindo totalmente a Imagem da Derrota.</li>
+                            <li>Diga <strong>"SWISH!"</strong> na sua mente enquanto isso acontece.</li>
+                        </ol>
+                    </div>
+
+                    <div class="highlight" style="margin-top: 20px;">
+                        <p><strong style="color: #c62828; font-size: 1.1em;">IMPORTANTE:</strong> Limpe a tela. Abra os olhos ou pense em algo totalmente diferente 
+                        (ex: a cor do seu carro) por 2 segundos.</p>
+                    </div>
+
+                    <p style="margin-top: 20px; color: #ffffff; font-weight: 600; font-size: 1.05em;">
+                        Repita isso 10 a 15 vezes. <strong style="color: #ffd700;">O mais rápido que puder.</strong> A velocidade é o que cria a nova conexão no seu cérebro.
+                    </p>
+                </div>
+
+                <!-- Contador de Repetições -->
+                <div class="counter-container">
+                    <h4 style="color: #1e3c72; margin-bottom: 15px; font-weight: 700;">🔄 Contador de Repetições</h4>
+                    <div class="counter-display">
+                        <span id="counterDisplay">0</span> / 10
+                    </div>
+                    <div class="counter-buttons">
+                        <button class="btn" onclick="incrementCounter()">➕ Fiz uma repetição</button>
+                        <button class="btn btn-secondary btn-small" onclick="resetCounter()">🔄 Reiniciar</button>
+                    </div>
+                </div>
+
+                <div class="interactive-field">
+                    <label>📋 Anote suas observações durante o exercício:</label>
+                    <textarea id="observacoes" placeholder="Como foi a experiência? O que você sentiu? A imagem ficou clara?">
+                    </textarea>
+                    <button class="btn btn-small" onclick="saveData()">💾 Salvar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 6: PASSO 4 -->
+        <section class="section" id="section-passo4">
+            <div class="section-header">
+                <div class="section-number">4</div>
+                <h2>O Teste</h2>
+                <h3>(Funcionou?)</h3>
+            </div>
+
+            <img src="https://metodorepro.dantashipnoterapia.com.br/trilha%204.jpeg" alt="Passo 4" class="section-image">
+
+            <div style="max-width: 700px; margin: 0 auto;">
+                <p style="font-size: 1.2em; line-height: 1.8; margin-bottom: 30px; text-align: center;">
+                    Vamos verificar.
+                </p>
+
+                <div class="action-card">
+                    <h4>AÇÃO (Teste Agora)</h4>
+                    
+                    <div class="steps-list">
+                        <ol>
+                            <li>Respire fundo.</li>
+                            <li>Agora, tente pensar na "Imagem da Derrota" (o gatilho) de propósito. Tente se forçar a pensar nela.</li>
+                            <li><strong style="color: #ffd700; font-size: 1.1em;">O que acontece?</strong></li>
+                        </ol>
+                    </div>
+
+                    <p style="margin-top: 30px; font-size: 1.1em; color: #ffffff; font-weight: 600;">Você vai notar uma de duas coisas:</p>
+                    
+                    <div style="margin: 20px 0; padding: 20px; background: rgba(255,255,255,0.95); border-radius: 8px; color: #1a1a1a;">
+                        <p style="color: #1a1a1a; font-weight: 600;">✓ A imagem parece sem graça, distante ou difícil de focar.</p>
+                        <p style="margin-top: 10px; color: #1a1a1a; font-weight: 600;">✓ A "Imagem de Poder" (Vitória) aparece automaticamente na sua frente.</p>
+                    </div>
+
+                    <p style="margin-top: 25px; font-size: 1.2em; text-align: center; color: #ffffff; font-weight: 700; text-shadow: 1px 1px 3px rgba(0,0,0,0.3);">
+                        <strong style="color: #ffd700;">🎉 Parabéns, você acabou de reprogramar seu gatilho!</strong>
+                    </p>
+                </div>
+
+                <div class="interactive-field">
+                    <label>✅ Registre o resultado do seu teste:</label>
+                    <textarea id="resultado" placeholder="Descreva o que aconteceu quando tentou pensar no gatilho. A imagem mudou? Como você se sentiu?">
+                    </textarea>
+                    <button class="btn btn-small" onclick="saveData()">💾 Salvar</button>
+                </div>
+
+                <div style="text-align: center; margin-top: 40px;">
+                    <button class="btn" onclick="addVictory()">🏆 Registrar esta Vitória</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 7: BÔNUS -->
+        <section class="section" style="background: #f8f9fa;">
+            <div class="bonus-section">
+                <h3>🎁 BÔNUS: Seu Arsenal de Autocontrole</h3>
+                
+                <p style="text-align: center; font-size: 1.1em; color: #1e3c72; margin-bottom: 40px;">
+                    Você desativou o gatilho principal. Agora, use estas duas ferramentas de bônus para 
+                    blindar sua mente em qualquer situação.
+                </p>
+
+                <div class="bonus-card">
+                    <h4>💬 BÔNUS 1: O Silenciador da Culpa (A Voz Crítica)</h4>
+                    <p style="margin-bottom: 15px;">
+                        Depois de um deslize, a "voz da culpa" ataca ("você é fraco", "falhou de novo").
+                    </p>
+                    <div class="highlight">
+                        <p style="color: #1a1a1a; font-weight: 600;"><strong style="color: #c62828;">Ação Rápida:</strong> Pegue essa voz e mude o som dela na sua cabeça. 
+                        Faça ela soar como o Pato Donald, ou super lenta, ou vindo do seu dedão do pé.</p>
+                        <p style="margin-top: 10px; color: #1a1a1a; font-weight: 600;">
+                            Você não consegue levar a sério uma voz ridícula. A culpa desaparece.
+                        </p>
+                    </div>
+
+                    <div class="interactive-field" style="margin-top: 20px;">
+                        <label>Como você vai modificar sua voz crítica?</label>
+                        <textarea id="bonus1" placeholder="Exemplo: Vou fazer ela soar como um robô em câmera lenta...">
+                        </textarea>
+                        <button class="btn btn-small" onclick="saveData()">💾 Salvar</button>
+                    </div>
+                </div>
+
+                <div class="bonus-card">
+                    <h4>⚓ BÔNUS 2: A Âncora de Emergência (O Botão Físico)</h4>
+                    <p style="margin-bottom: 15px;">
+                        Precisa de controle agora?
+                    </p>
+                    
+                    <div class="steps-list">
+                        <ol>
+                            <li>Feche os olhos. Lembre-se de uma vez que você se sentiu 100% no controle e poderoso(a).</li>
+                            <li>No exato momento em que o sentimento estiver no auge, aperte firmemente o seu polegar contra o dedo indicador por 3 segundos.</li>
+                            <li>Repita 5 vezes.</li>
+                        </ol>
+                    </div>
+
+                    <div class="highlight" style="margin-top: 20px;">
+                        <p style="color: #1a1a1a; font-weight: 600;"><strong style="color: #c62828;">Você acabou de criar um "botão" de controle.</strong> 
+                        Aperte-o sempre que precisar de foco imediato.</p>
+                    </div>
+
+                    <div class="interactive-field" style="margin-top: 20px;">
+                        <label>Qual memória poderosa você vai usar para criar sua âncora?</label>
+                        <textarea id="bonus2" placeholder="Descreva a memória de quando você se sentiu totalmente no controle e poderoso(a)...">
+                        </textarea>
+                        <button class="btn btn-small" onclick="saveData()">💾 Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- REGISTRO DE VITÓRIAS -->
+        <section class="section" id="section-victories">
+            <div style="max-width: 700px; margin: 0 auto;">
+                <h2 style="text-align: center; color: #1e3c72; margin-bottom: 30px;">
+                    🏆 Meu Diário de Vitórias
+                </h2>
+                
+                <p style="text-align: center; font-size: 1.1em; margin-bottom: 40px;">
+                    Registre cada vez que você usar a técnica com sucesso. Isso reforça sua transformação!
+                </p>
+
+                <div class="victories-log" id="victoriesLog">
+                    <p style="text-align: center; color: #999;">Suas vitórias aparecerão aqui...</p>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn btn-secondary" onclick="clearVictories()">🗑️ Limpar Histórico</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- MEUS REGISTROS -->
+        <section class="section" style="background: #f8f9fa;">
+            <div style="max-width: 700px; margin: 0 auto;">
+                <h2 style="text-align: center; color: #1e3c72; margin-bottom: 30px;">
+                    📊 Meus Registros Completos
+                </h2>
+
+                <div class="victories-log">
+                    <h4 style="color: #4c5fd5; margin-bottom: 15px; font-weight: 700;">🎯 Minha Imagem da Derrota:</h4>
+                    <p id="display-gatilho" style="padding: 15px; background: #f8f9fa; border-radius: 8px; min-height: 60px;">
+                        -
+                    </p>
+
+                    <h4 style="color: #4c5fd5; margin-bottom: 15px; margin-top: 30px; font-weight: 700;">🏆 Minha Imagem de Poder:</h4>
+                    <p id="display-visao" style="padding: 15px; background: #f8f9fa; border-radius: 8px; min-height: 60px;">
+                        -
+                    </p>
+
+                    <h4 style="color: #4c5fd5; margin-bottom: 15px; margin-top: 30px; font-weight: 700;">📝 Minhas Observações:</h4>
+                    <p id="display-observacoes" style="padding: 15px; background: #f8f9fa; border-radius: 8px; min-height: 60px;">
+                        -
+                    </p>
+
+                    <h4 style="color: #4c5fd5; margin-bottom: 15px; margin-top: 30px; font-weight: 700;">✅ Resultado do Teste:</h4>
+                    <p id="display-resultado" style="padding: 15px; background: #f8f9fa; border-radius: 8px; min-height: 60px;">
+                        -
+                    </p>
+
+                    <h4 style="color: #4c5fd5; margin-bottom: 15px; margin-top: 30px; font-weight: 700;">💬 Bônus 1 - Voz Crítica:</h4>
+                    <p id="display-bonus1" style="padding: 15px; background: #f8f9fa; border-radius: 8px; min-height: 60px;">
+                        -
+                    </p>
+
+                    <h4 style="color: #4c5fd5; margin-bottom: 15px; margin-top: 30px; font-weight: 700;">⚓ Bônus 2 - Âncora:</h4>
+                    <p id="display-bonus2" style="padding: 15px; background: #f8f9fa; border-radius: 8px; min-height: 60px;">
+                        -
+                    </p>
+                </div>
+
+                <div style="text-align: center; margin-top: 40px;">
+                    <button class="btn" onclick="exportData()">📥 Exportar Meus Dados</button>
+                    <button class="btn btn-secondary" onclick="clearAllData()">🔄 Recomeçar do Zero</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 8: CONCLUSÃO -->
+        <section class="section" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; text-align: center;">
+            <div style="max-width: 700px; margin: 0 auto;">
+                <h2 style="font-size: 3em; color: white; margin-bottom: 30px;">
+                    Você está no Controle.
+                </h2>
+
+                <p style="font-size: 1.3em; line-height: 1.8; margin-bottom: 30px; color: #ffffff; font-weight: 600; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                    <strong style="color: #ffd700;">Parabéns.</strong> Você agora possui uma ferramenta de emergência para momentos de crise. 
+                    Use-a sem moderação.
+                </p>
+
+                <div style="background: rgba(255,255,255,0.15); padding: 40px; border-radius: 15px; margin: 40px 0; backdrop-filter: blur(10px);">
+                    <p style="font-size: 1.2em; line-height: 1.8; margin-bottom: 20px; color: #ffffff; font-weight: 600; text-shadow: 1px 1px 3px rgba(0,0,0,0.3);">
+                        Este "Playbook" é a sua <strong style="color: #ffd700;">ferramenta tática</strong> para vencer a batalha do impulso.
+                    </p>
+                    <p style="font-size: 1.2em; line-height: 1.8; color: #ffffff; font-weight: 600; text-shadow: 1px 1px 3px rgba(0,0,0,0.3);">
+                        O seu curso principal, <strong style="color: #ffd700;">Alimentação Intuitiva</strong>, é a sua estratégia de longo prazo 
+                        para vencer a guerra e conquistar a liberdade total.
+                    </p>
+                </div>
+
+                <p style="font-size: 1.2em; line-height: 1.8; margin-bottom: 30px; color: #ffffff; font-weight: 600; text-shadow: 1px 1px 3px rgba(0,0,0,0.3);">
+                    Use esta ferramenta para vencer as <strong style="color: #ffd700;">batalhas do dia a dia</strong>, enquanto o curso principal 
+                    garante que você vença a <strong style="color: #ffd700;">guerra</strong>.
+                </p>
+
+                <div style="margin: 50px 0;">
+                    <p style="font-size: 1.4em; font-weight: bold; color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                        🌟 Você fez um ótimo investimento em você. 🌟
+                    </p>
+                </div>
+
+                <div class="badge" style="font-size: 1.2em;">
+                    💪 Continue Sua Transformação
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p style="font-size: 1.1em; font-weight: bold;">Protocolo Destruidor de Impulsos</p>
+            <p>Uma ferramenta de transformação imediata</p>
+            <p style="margin-top: 20px; font-size: 0.9em; opacity: 0.7;">
+                © 2024 - Todos os seus dados são salvos localmente no seu navegador
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Sistema de Salvamento Automático
+        let saveTimeout;
+
+        function saveData() {
+            const data = {
+                gatilho: document.getElementById('gatilho').value,
+                visao: document.getElementById('visao').value,
+                observacoes: document.getElementById('observacoes').value,
+                resultado: document.getElementById('resultado').value,
+                bonus1: document.getElementById('bonus1').value,
+                bonus2: document.getElementById('bonus2').value,
+                counter: document.getElementById('counterDisplay').textContent,
+                checkPasso1: document.getElementById('check-passo1').checked,
+                checkPasso2: document.getElementById('check-passo2').checked,
+                checkPasso3: document.getElementById('check-passo3').checked,
+                checkPasso4: document.getElementById('check-passo4').checked
+            };
+
+            localStorage.setItem('playbook_data', JSON.stringify(data));
+            showToast();
+            updateDisplays();
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('playbook_data');
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.getElementById('gatilho').value = data.gatilho || '';
+                document.getElementById('visao').value = data.visao || '';
+                document.getElementById('observacoes').value = data.observacoes || '';
+                document.getElementById('resultado').value = data.resultado || '';
+                document.getElementById('bonus1').value = data.bonus1 || '';
+                document.getElementById('bonus2').value = data.bonus2 || '';
+                document.getElementById('counterDisplay').textContent = data.counter || '0';
+                document.getElementById('check-passo1').checked = data.checkPasso1 || false;
+                document.getElementById('check-passo2').checked = data.checkPasso2 || false;
+                document.getElementById('check-passo3').checked = data.checkPasso3 || false;
+                document.getElementById('check-passo4').checked = data.checkPasso4 || false;
+                
+                updateChecklistItems();
+                updateDisplays();
+            }
+            loadVictories();
+        }
+
+        function updateDisplays() {
+            document.getElementById('display-gatilho').textContent = 
+                document.getElementById('gatilho').value || '-';
+            document.getElementById('display-visao').textContent = 
+                document.getElementById('visao').value || '-';
+            document.getElementById('display-observacoes').textContent = 
+                document.getElementById('observacoes').value || '-';
+            document.getElementById('display-resultado').textContent = 
+                document.getElementById('resultado').value || '-';
+            document.getElementById('display-bonus1').textContent = 
+                document.getElementById('bonus1').value || '-';
+            document.getElementById('display-bonus2').textContent = 
+                document.getElementById('bonus2').value || '-';
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        function clearAllData() {
+            if (confirm('Tem certeza que deseja apagar todos os seus registros e recomeçar do zero?')) {
+                localStorage.removeItem('playbook_data');
+                location.reload();
+            }
+        }
+
+        function exportData() {
+            const data = localStorage.getItem('playbook_data');
+            if (data) {
+                const blob = new Blob([data], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'meu_protocolo_destruidor_impulsos.json';
+                a.click();
+            } else {
+                alert('Nenhum dado para exportar ainda!');
+            }
+        }
+
+        // Auto-save ao digitar
+        document.querySelectorAll('textarea, input[type="text"]').forEach(element => {
+            element.addEventListener('input', () => {
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(saveData, 1000);
+            });
+        });
+
+        // Checklist
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                saveData();
+                updateChecklistItems();
+            });
+        });
+
+        function updateChecklistItems() {
+            document.querySelectorAll('.progress-item').forEach(item => {
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                if (checkbox.checked) {
+                    item.classList.add('completed');
+                } else {
+                    item.classList.remove('completed');
+                }
+            });
+        }
+
+        // Cronômetro
+        let timerInterval;
+        let timeLeft = 60;
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 60;
+            document.getElementById('timerDisplay').textContent = timeLeft;
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timerDisplay').textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('timerDisplay').style.color = '#4caf50';
+                    setTimeout(() => {
+                        document.getElementById('timerDisplay').style.color = '#667eea';
+                    }, 2000);
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 60;
+            document.getElementById('timerDisplay').textContent = timeLeft;
+        }
+
+        // Contador
+        function incrementCounter() {
+            const counter = document.getElementById('counterDisplay');
+            let count = parseInt(counter.textContent);
+            if (count < 15) {
+                count++;
+                counter.textContent = count;
+                saveData();
+                
+                if (count >= 10) {
+                    counter.style.color = '#4caf50';
+                    if (count === 10) {
+                        alert('🎉 Parabéns! Você completou as 10 repetições! Pode fazer mais se quiser.');
+                    }
+                }
+            }
+        }
+
+        function resetCounter() {
+            document.getElementById('counterDisplay').textContent = '0';
+            document.getElementById('counterDisplay').style.color = '#667eea';
+            saveData();
+        }
+
+        // Registro de Vitórias
+        function addVictory() {
+            const victories = JSON.parse(localStorage.getItem('victories') || '[]');
+            const now = new Date();
+            const dateStr = now.toLocaleString('pt-BR');
+            
+            const victory = {
+                date: dateStr,
+                gatilho: document.getElementById('gatilho').value || 'Não especificado',
+                resultado: document.getElementById('resultado').value || 'Teste realizado com sucesso'
+            };
+            
+            victories.unshift(victory);
+            localStorage.setItem('victories', JSON.stringify(victories));
+            loadVictories();
+            
+            alert('🏆 Vitória registrada com sucesso!');
+        }
+
+        function loadVictories() {
+            const victories = JSON.parse(localStorage.getItem('victories') || '[]');
+            const container = document.getElementById('victoriesLog');
+            
+            if (victories.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999;">Suas vitórias aparecerão aqui...</p>';
+                return;
+            }
+            
+            container.innerHTML = victories.map(v => `
+                <div class="victory-entry">
+                    <div class="victory-date">📅 ${v.date}</div>
+                    <strong>Gatilho trabalhado:</strong> ${v.gatilho.substring(0, 100)}${v.gatilho.length > 100 ? '...' : ''}
+                    <br><strong>Resultado:</strong> ${v.resultado.substring(0, 100)}${v.resultado.length > 100 ? '...' : ''}
+                </div>
+            `).join('');
+        }
+
+        function clearVictories() {
+            if (confirm('Tem certeza que deseja limpar seu histórico de vitórias?')) {
+                localStorage.removeItem('victories');
+                loadVictories();
+            }
+        }
+
+        // Barra de Progresso (scroll)
+        window.addEventListener('scroll', () => {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight - windowHeight;
+            const scrolled = window.scrollY;
+            const progress = (scrolled / documentHeight) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        });
+
+        // Carregar dados ao iniciar
+        window.addEventListener('load', loadData);
+    </script>
+</body>
+</html>
